@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios'
+import {
+  BrowserRouter as Router,
+  Route,
+} from "react-router-dom";
+import HomePage from './HomePage';
+import Navbar from './Navbar';
+import BookTable from './BookTable';
+import ContactUs from './ContactUs';
+import Menu from './Menu'
+import CurrentOrder from './CurrentOrder'
+import './style.css'
 
 function App() {
+  const [menuData, setMenuData] = useState('');
+  useEffect(async() => {
+    const result = await axios.post('menu_items')
+    setMenuData(result.data)
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router >
+      <Navbar/>
+        <Route path="/" exact component={props => <HomePage/>} />
+        <Route path="/menu" component={props => <Menu menuData={menuData} />} />
+        <Route path="/current_order" component={props => <CurrentOrder menuData={menuData} />} />
+        <Route path="/book_table" component={props => <BookTable/>} />
+        <Route path="/contact_us" component={props => <ContactUs/>} />
+      </Router>
     </div>
   );
 }
